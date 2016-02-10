@@ -11,14 +11,19 @@ import CoreLocation
 import MapKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
-
-    @IBOutlet weak var theMap: MKMapView!
     
-    @IBOutlet weak var theLabel: UILabel!
+    @IBOutlet weak var currentLat: UILabel!
+    @IBOutlet weak var currentLong: UILabel!
+    @IBOutlet weak var scienceWorldLat: UILabel!
+    
+    @IBOutlet weak var scienceWorldLong: UILabel!
+    
+    @IBOutlet weak var distance: UILabel!
     
     var manager:CLLocationManager!
     var myLocations: [CLLocation] = []
-    var startLocation:CLLocation
+    var startLocation:CLLocation?
+    let endLocation = CLLocation(latitude: 49.273431, longitude: -123.103857)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,13 +33,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestAlwaysAuthorization()
         manager.startUpdatingLocation()
-        manager.requestLocation()
+        //manager.requestLocation()
         
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             print("Found user's location: \(location)")
+            startLocation = location
+            currentLat.text = String(location.coordinate.latitude)
+            currentLong.text = String(location.coordinate.longitude)
         }
     }
     
@@ -47,6 +55,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func getDistance() {
+        let distanceInMeters = startLocation!.distanceFromLocation(endLocation)
+        let distanceInKM = distanceInMeters / 1000
+        
+        distance.text = String(distanceInKM) + " KM"
+        
+    }
     //func distanceInMetersFrom(otherCoord : CLLocationCoordinate2D) -> CLLocationDistance {
         //let firstLoc = CLLocation(latitude:  , longitude: self.longitude)
         //let secondLoc = CLLocation(latitude: otherCoord.latitude, longitude: otherCoord.longitude)
